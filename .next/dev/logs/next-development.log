@@ -1,0 +1,179 @@
+[00:00:01.693] Server  LOG      ✓ Ready in 1487ms
+[00:00:15.941] Server  ERROR    ⨯ ./biz/buz_resarch/app/page.tsx:8:1
+Module not found: Can't resolve '@/trpc/server'
+   6 | import { Tabs } from "@/components/tabs"
+   7 | import { StreamCard } from "@/components/stream-card"
+>  8 | import { api } from "@/trpc/server"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 |
+  11 | // Mock data for demonstration
+
+Import map: aliased to relative './trpc/server' inside of [project]/biz/buz_resarch
+
+
+Import traces:
+  Client Component Browser:
+    ./biz/buz_resarch/app/page.tsx [Client Component Browser]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./biz/buz_resarch/app/page.tsx [Client Component SSR]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:16.731] Browser ERROR   uncaughtError: Error: ./biz/buz_resarch/app/page.tsx:8:1
+Module not found: Can't resolve '@/trpc/server'
+   6 | import { Tabs } from "@/components/tabs"
+   7 | import { StreamCard } from "@/components/stream-card"
+>  8 | import { api } from "@/trpc/server"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 |
+  11 | // Mock data for demonstration
+
+Import map: aliased to relative './trpc/server' inside of [project]/biz/buz_resarch
+
+
+Import traces:
+  Client Component Browser:
+    ./biz/buz_resarch/app/page.tsx [Client Component Browser]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./biz/buz_resarch/app/page.tsx [Client Component SSR]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:16.901] Browser ERROR   ./biz/buz_resarch/app/page.tsx:8:1
+Module not found: Can't resolve '@/trpc/server'
+   6 | import { Tabs } from "@/components/tabs"
+   7 | import { StreamCard } from "@/components/stream-card"
+>  8 | import { api } from "@/trpc/server"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 |
+  11 | // Mock data for demonstration
+
+Import map: aliased to relative './trpc/server' inside of [project]/biz/buz_resarch
+
+Import traces:
+  Client Component Browser:
+    ./biz/buz_resarch/app/page.tsx [Client Component Browser]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./biz/buz_resarch/app/page.tsx [Client Component SSR]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:17.121] Browser ERROR   ./biz/buz_resarch/app/page.tsx:8:1
+Module not found: Can't resolve '@/trpc/server'
+   6 | import { Tabs } from "@/components/tabs"
+   7 | import { StreamCard } from "@/components/stream-card"
+>  8 | import { api } from "@/trpc/server"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 |
+  11 | // Mock data for demonstration
+
+Import map: aliased to relative './trpc/server' inside of [project]/biz/buz_resarch
+
+Import traces:
+  Client Component Browser:
+    ./biz/buz_resarch/app/page.tsx [Client Component Browser]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./biz/buz_resarch/app/page.tsx [Client Component SSR]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:02:10.121] Browser ERROR   ./biz/buz_resarch/app/page.tsx:8:1
+Module not found: Can't resolve '@/trpc/server'
+   6 | import { Tabs } from "@/components/tabs"
+   7 | import { StreamCard } from "@/components/stream-card"
+>  8 | import { api } from "@/trpc/server"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 |
+  11 | // Mock data for demonstration
+
+Import map: aliased to relative './trpc/server' inside of [project]/biz/buz_resarch
+
+Import traces:
+  Client Component Browser:
+    ./biz/buz_resarch/app/page.tsx [Client Component Browser]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./biz/buz_resarch/app/page.tsx [Client Component SSR]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:02:14.119] Browser ERROR   ./biz/buz_resarch/app/page.tsx:8:1
+Export api doesn't exist in target module
+   6 | import { Tabs } from "@/components/tabs"
+   7 | import { StreamCard } from "@/components/stream-card"
+>  8 | import { api } from "@/trpc/server"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 |
+  11 | // Mock data for demonstration
+
+The export api was not found in module [project]/biz/buz_resarch/trpc/server.ts [app-client] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./biz/buz_resarch/app/page.tsx [Client Component Browser]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./biz/buz_resarch/app/page.tsx [Client Component SSR]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+[00:02:14.119] Browser ERROR   ./biz/buz_resarch/app/page.tsx:8:1
+Export api doesn't exist in target module
+   6 | import { Tabs } from "@/components/tabs"
+   7 | import { StreamCard } from "@/components/stream-card"
+>  8 | import { api } from "@/trpc/server"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 |
+  11 | // Mock data for demonstration
+
+The export api was not found in module [project]/biz/buz_resarch/trpc/server.ts [app-ssr] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./biz/buz_resarch/app/page.tsx [Client Component Browser]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./biz/buz_resarch/app/page.tsx [Client Component SSR]
+    ./biz/buz_resarch/app/page.tsx [Server Component]
+[00:02:19.337] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:20.123] Browser ERROR   %s is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server. <HomePage>
+[00:02:20.124] Browser ERROR   A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.
+[00:02:20.124] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:02:20.124] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:02:20.124] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1766920290057}
+[29:37:45.142] Server  LOG        Reload env: .env
+[29:37:46.025] Browser ERROR   A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.
+[29:39:21.258] Server  LOG        Reload env: .env
+[29:39:22.025] Browser ERROR   A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.
+[29:39:25.094] Server  LOG        Reload env: .env
+[29:39:26.029] Browser ERROR   A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.
+[29:39:33.620] Server  LOG        Reload env: .env
+[29:39:34.025] Browser ERROR   A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.
+[29:39:35.669] Server  LOG        Reload env: .env
+[29:39:36.024] Browser ERROR   A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.
+[29:58:51.840] Server  LOG        Reload env: .env
+[29:58:53.024] Browser ERROR   A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.

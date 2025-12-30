@@ -1,0 +1,119 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Channel {
+  id        String   @id @default(cuid())
+  name      String
+  avatar    String?
+  group     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  streams   Stream[]
+}
+
+model Stream {
+  id                String              @id @default(cuid())
+  title             String
+  thumbnailUrl      String?
+  status            StreamStatus        @default(SCHEDULED)
+  viewerCount       Int?
+  scheduledTime     DateTime?
+  duration          String?
+  gameTag           String?
+  channelId         String
+  channel           Channel             @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  transcriptSegments TranscriptSegment[]
+  clips             Clip[]
+
+  @@index([status])
+  @@index([channelId])
+}
+
+enum StreamStatus {
+  LIVE
+  SCHEDULED
+  ARCHIVE
+}
+
+model TranscriptSegment {
+  id        String   @id @default(cuid())
+  streamId  String
+  stream    Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  timestamp String
+  text      String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([streamId])
+}
+
+model Clip {
+  id        String   @id @default(cuid())
+  streamId  String
+  stream    Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  startTime String
+  endTime   String
+  memo      String?  @db.Text
+  tags      String[] @default([])
+  userId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([streamId])
+  @@index([userId])
+}
+
+model Buzzword {
+  id        String         @id @default(cuid())
+  word      String         @unique
+  score     Float          @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  stats     BuzzwordStat[]
+  lifecycle BuzzwordLifecycle[]
+
+  @@index([score])
+}
+
+model BuzzwordStat {
+  id           String   @id @default(cuid())
+  buzzwordId   String
+  buzzword     Buzzword @relation(fields: [buzzwordId], references: [id], onDelete: Cascade)
+  streamerId   String
+  date         DateTime
+  frequency    Int      @default(0)
+  avgViews     Int      @default(0)
+  engagement   Float    @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([buzzwordId])
+  @@index([streamerId])
+  @@index([date])
+}
+
+model BuzzwordLifecycle {
+  id              String   @id @default(cuid())
+  buzzwordId      String
+  streamerId      String
+  peakDate        DateTime
+  recentGrowth    Float    @default(0)
+  clipSuccessRate Float    @default(0)
+  decayRate       Float    @default(0)
+  status          String   @default("FRESH") // FRESH, FADING, EXPIRED, OVERUSED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([buzzwordId, streamerId])
+  @@index([buzzwordId])
+  @@index([streamerId])
+  @@index([status])
+}
