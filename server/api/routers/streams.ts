@@ -103,6 +103,6 @@ export const streamsRouter = createTRPCRouter({
         }) ?? []
       );
     }),
-    byId: publicProcedure
-    .input
+    // byId: publicProcedure
+    // .input
 });

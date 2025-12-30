@@ -1,11 +1,11 @@
-"use client"
+
 
 import { useState } from "react"
 import { Header } from "@/components/header"
 import { Sidebar } from "@/components/sidebar"
 import { Tabs } from "@/components/tabs"
 import { StreamCard } from "@/components/stream-card"
-import { api } from "@/trpc/server"
+import { trpc } from "@/lib/trpc"
 
 
 // Mock data for demonstration
@@ -111,9 +111,22 @@ const tabs = [
   { id: "clips", label: "切り抜き" },
 ]
 
-export default async function HomePage() {
+export default function HomePage() {
   const [activeTab, setActiveTab] = useState("live")
-  const streams = await api.streams.list({limit:24});
+  const { data: streams = [], isLoading, error } = trpc.streams.list.useQuery({
+    limit: 24,
+  })
+  const formatDuration = (totalSec: number) => {
+    const hours = Math.floor(totalSec / 3600)
+    const minutes = Math.floor((totalSec % 3600) / 60)
+    const seconds = totalSec % 60
+    const pad = (value: number) => value.toString().padStart(2, "0")
+
+    if (hours > 0) {
+      return `${hours}:${pad(minutes)}:${pad(seconds)}`
+    }
+    return `${minutes}:${pad(seconds)}`
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -131,9 +144,28 @@ export default async function HomePage() {
         </main>
       </div> */}
       <div>
-        {streams.map((s) => (
-          <StreamCard key={s.id} {...s} />
-        ))}
+        {isLoading && <div className="p-6 text-sm text-muted-foreground">Loading...</div>}
+        {error && <div className="p-6 text-sm text-destructive">Failed to load streams.</div>}
+        {!isLoading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
+            {streams.map((s) => (
+              <StreamCard
+                key={s.id}
+                id={s.id}
+                title={s.title ?? "Untitled"}
+                thumbnailUrl={s.thumbnailUrl ?? "/placeholder.svg"}
+                channelName={s.channelName ?? "Unknown"}
+                channelAvatar={s.channelAvatar ?? "/placeholder.svg"}
+                group={s.group ?? ""}
+                status={s.status ?? "archive"}
+                viewerCount={s.viewerCountMax ?? s.viewerCountAverage ?? undefined}
+                scheduledTime={s.scheduledTime ?? undefined}
+                duration={s.durationSec ? formatDuration(s.durationSec) : undefined}
+                gameTag={s.gameTag ?? undefined}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
