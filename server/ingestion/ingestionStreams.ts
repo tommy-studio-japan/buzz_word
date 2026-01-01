@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { randomUUID } from "crypto";
 
 /**
  * =========================
@@ -24,7 +25,7 @@ export type IngestChannelInput = {
   channel_name: string;
   handle_name?: string | null;
   avatar_url?: string | null;
-  streamer_id?: string | null; // MVPでは optional
+  streamer_id: string; // NOT NULL (required)
 };
 
 export type IngestStreamInput = {
@@ -63,6 +64,33 @@ export async function ingestStreams(params: {
   streamsUpserted: number;
 }> {
   const { channels, streams } = params;
+
+  /**
+   * -------------------------
+   * 0) streamers upsert (REQUIRED)
+   * -------------------------
+   */
+  // Ensure valid UUIDs (Postgres uuid type)
+  const streamerIds = Array.from(
+    new Set(channels.map((c) => c.streamer_id)),
+  );
+
+  if (streamerIds.length > 0) {
+    const { error } = await supabase.from("streamers").upsert(
+      streamerIds.map((id) => ({
+        id,
+        streamer_name: "Test Streamer",
+        avatar_url: null,
+        group: "test",
+        created_at: new Date().toISOString(),
+        updated_at: null
+      })),
+    );
+
+    if (error) {
+      throw new Error(`streamers upsert failed: ${error.message}`);
+    }
+  }
 
   /**
    * -------------------------
@@ -176,4 +204,59 @@ export async function ingestStreams(params: {
     channelsUpserted: channels.length,
     streamsUpserted: streamRows.length,
   };
+}
+
+/**
+ * =========================
+ * Local Test Runner (MVP)
+ * =========================
+ * Usage:
+ *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
+ *   ts-node server/ingestion/ingestionStreams.ts
+ * or
+ *   node --loader ts-node/esm server/ingestion/ingestionStreams.ts
+ */
+
+if (require.main === module) {
+  (async () => {
+    try {
+      const testStreamerId = randomUUID();
+
+      const result = await ingestStreams({
+        channels: [
+          {
+            platform: "youtube",
+            platform_channel_id: "UC_TEST_CHANNEL_001",
+            channel_name: "Test Channel",
+            handle_name: "@test_channel",
+            avatar_url: null,
+            streamer_id: testStreamerId,
+          },
+        ],
+        streams: [
+          {
+            platform: "youtube",
+            video_id: "TEST_VIDEO_001",
+            title: "Test Stream Title",
+            thumbnail_url: "https://placehold.co/640x360/png",
+            published_at: new Date().toISOString(),
+            scheduled_time: null,
+            status: "archive",
+            duration_sec: 3600,
+            viewer_count_max: 1234,
+            viewer_count_average: 456,
+            game_tag: "test",
+            channel_platform: "youtube",
+            channel_platform_channel_id: "UC_TEST_CHANNEL_001",
+          },
+        ],
+      });
+
+      console.log("Ingestion succeeded:", result);
+      process.exit(0);
+    } catch (err) {
+      console.error("Ingestion failed:", err);
+      process.exit(1);
+    }
+  })();
 }

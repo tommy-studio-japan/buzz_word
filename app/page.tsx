@@ -1,4 +1,4 @@
-
+"use client"
 
 import { useState } from "react"
 import { Header } from "@/components/header"
@@ -113,6 +113,32 @@ const tabs = [
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState("live")
+  /** [memo]
+   *  なぜtrpc.streamsは/server/api/root.tsを示すのか？
+   *   👉trpc.streams は「サーバーで定義した tRPC router の“型”を反映している」からです。
+   *  なぜtrpc だけだと lib/trpc.ts を示すのか？
+   *   👉 はい。trpc はクライアント側の“型付き API クライアント”の定義で、実体は lib/trpc.ts にあります。
+   * 
+[ server/api/root.ts ]
+  └─ appRouter
+      ├─ streams
+      │    └─ list
+      └─ channels
+           └─ list
+        ▲
+        │（型）
+        │
+[ lib/trpc.ts ]
+  └─ createTRPCReact<AppRouter>()
+        ▲
+        │
+[ page.tsx ]
+  └─ trpc.streams.list.useQuery()
+
+  重要なのは👇
+**「実装は server、型は client に流れてくる」**という一方向性です。
+
+*/
   const { data: streams = [], isLoading, error } = trpc.streams.list.useQuery({
     limit: 24,
   })
@@ -130,7 +156,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      {/* <div className="flex flex-1">
+      <div className="flex flex-1">
         <Sidebar />
         <main className="flex-1 overflow-y-auto">
           <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
@@ -142,7 +168,7 @@ export default function HomePage() {
             </div>
           </div>
         </main>
-      </div> */}
+      </div>
       <div>
         {isLoading && <div className="p-6 text-sm text-muted-foreground">Loading...</div>}
         {error && <div className="p-6 text-sm text-destructive">Failed to load streams.</div>}

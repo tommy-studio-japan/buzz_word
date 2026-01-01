@@ -2,11 +2,31 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Stream, StreamStatus } from "@/types/stream";
-
+import { firstOrSelf } from "../../lib/supabase/utils"
 /**
  * Supabase依存はこのファイルだけ
  * UI には Stream[] だけを返す
  */
+
+/** [memo] 
+ * tRPCにおけるProcedure (クライアントから呼び出せるAPIの単位 e.g. GET /streams)
+ *
+[tRPCでのAPIは以下の３階層で構成される] 
+ router
+  └─ procedure
+        ├─ input
+        ├─ output
+        └─ resolver
+ 
+ * list: procedure名
+  名前：意味
+　streamsRouter　：　APIのまとまり（namespace、APIの名前空間）
+　list　：　procedure名
+　publicProcedure　：　procedureの土台
+　.query()　：　GET的処理
+　.mutation()　：　POST/PUT/DELETE的処理
+      
+*/
 export const streamsRouter = createTRPCRouter({
   list: publicProcedure
     .input(
@@ -59,10 +79,11 @@ export const streamsRouter = createTRPCRouter({
         throw new Error(error.message);
       }
 
+   
       return (
         data?.map((row): Stream => {
-          const channel = row.channels?.[0] ?? null;
-          const streamer = channel?.streamers?.[0] ?? null;
+          const channel = firstOrSelf<any>(row.channels);
+          const streamer = firstOrSelf<any>(channel?.streamers);
 
           return {
             // ===== streams =====
@@ -98,7 +119,7 @@ export const streamsRouter = createTRPCRouter({
             streamerId: channel?.streamer_id ?? null,
             streamerName: streamer?.streamer_name ?? null,
             streamerAvatar: streamer?.avatar_url ?? null,
-            group: streamer?.group ?? null,
+            group: (streamer?.group ?? streamer?.["group"]) ?? null,
           };
         }) ?? []
       );
