@@ -5,7 +5,7 @@ import { appRouter } from "@/server/api/root"
  * 
  * @param req 
  * endpoint: "/api/trpc"
-	•	入口はここだけ、という宣言
+	•	入口はここだけ、という宣言 = "route.ts = HTTP専用アダプタ"
 	•	router: appRouter
 	•	「呼ばれた処理名（例: streams.list）を見て、appRouter の中から該当 procedure を探して実行する」
 	•	export { handler as GET, handler as POST }
