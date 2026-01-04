@@ -15,6 +15,7 @@ type YoutubeMetadata = {
   durationSec: number | null;
   status: "live" | "scheduled" | "archive" | null;
   channelId: string;
+  channelName: string;
 };
 
 type UtteranceInput = {
@@ -88,13 +89,39 @@ const listClipsOutputSchema = z.object({
  */
 export const youtubeRouter = createTRPCRouter({
   ingestUrl: publicProcedure
-    .input(z.object({ url: z.string().url() }))
+    .input(z.object(
+      { 
+        url: z.string().url(),
+        streamerId: z.string().uuid(),
+     })) 
     .output(ingestOutputSchema)
     .mutation(async ({ ctx, input }) => {
+      console.log("== ctx", ctx, input);
       const { youtube } = requireServices(ctx);
+      console.log("=== youtube: ", youtube);
 
       const { videoId } = youtube.parseUrl(input.url);
       const metadata = await youtube.fetchMetadata(videoId);
+      console.log("== metadata:", metadata);
+
+      const { data: channel, error: channelErr } = await supabaseServer
+        .from("channels")
+        .upsert(
+          {
+            streamer_id: input.streamerId,
+            platform: "youtube",
+            platform_channel_id: metadata.channelId, // YouTubeのUCxxxx
+            channel_name: metadata.channelName ?? null,
+          },
+          { onConflict: "platform,platform_channel_id" },
+        )
+        .select("id")
+        .single();
+
+      if (channelErr || !channel) {
+        throw new Error(channelErr?.message ?? "failed to upsert channel");
+      }
+
 
       const { data, error } = await supabaseServer
         .from("streams")
@@ -102,12 +129,12 @@ export const youtubeRouter = createTRPCRouter({
           {
             platform: "youtube",
             video_id: metadata.videoId,
-            channel_id: metadata.channelId,
+            channel_id: channel.id,
             title: metadata.title,
             published_at: metadata.publishedAt,
             duration_sec: metadata.durationSec,
             status: metadata.status,
-          },
+          },  
           { onConflict: "platform,video_id" },
         )
         .select("id")

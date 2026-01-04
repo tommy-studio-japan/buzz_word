@@ -24,6 +24,7 @@ function getBaseUrl() {
 /**
  * Create a tRPC client that uses POST (via httpBatchLink) so inputs are sent in the request body
  * instead of query strings.
+ * httpBatchLinkでendpointを定義しているので、HTTPリクエストはJSON-RPC + batch形式になる(= bodyは)
  */
 export function createTRPCClient() {
   return trpc.createClient({
