@@ -15,7 +15,7 @@ type YoutubeMetadata = {
   durationSec: number | null;
   status: "live" | "scheduled" | "archive" | null;
   channelId: string;
-  channelName: string;
+  channelTitle: string | null;
 };
 
 type UtteranceInput = {
@@ -92,6 +92,7 @@ export const youtubeRouter = createTRPCRouter({
     .input(z.object(
       { 
         url: z.string().url(),
+        /** [TODO] ここでstreamerIdを渡されるので、UIでstreamerを選択できるor追加できるようにする。 */
         streamerId: z.string().uuid(),
      })) 
     .output(ingestOutputSchema)
@@ -104,6 +105,10 @@ export const youtubeRouter = createTRPCRouter({
       const metadata = await youtube.fetchMetadata(videoId);
       console.log("== metadata:", metadata);
 
+      if (!metadata.channelTitle) {
+        throw new Error("YouTube metadata missing channelName.");
+      }
+
       const { data: channel, error: channelErr } = await supabaseServer
         .from("channels")
         .upsert(
@@ -111,7 +116,7 @@ export const youtubeRouter = createTRPCRouter({
             streamer_id: input.streamerId,
             platform: "youtube",
             platform_channel_id: metadata.channelId, // YouTubeのUCxxxx
-            channel_name: metadata.channelName ?? null,
+            channel_name: metadata.channelTitle,
           },
           { onConflict: "platform,platform_channel_id" },
         )
