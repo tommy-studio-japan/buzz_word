@@ -2,6 +2,7 @@ import { createTRPCRouter } from "../trpc";
 import { streamsRouter } from "./routers/streams";
 import { channelsRouter } from "./routers/channels";
 import { youtubeRouter } from "./routers/youtube";
+import { streamersRouter } from "./routers/streamers";
 
 export const appRouter = createTRPCRouter({
   /** [memp]
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   streams: streamsRouter,
   channels: channelsRouter,
   youtube: youtubeRouter,
+  streamers: streamersRouter,
 });
 
 export type AppRouter = typeof appRouter;
