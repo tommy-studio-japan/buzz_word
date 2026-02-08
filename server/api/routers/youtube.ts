@@ -36,6 +36,12 @@ type YoutubeServices = {
     parseUrl: (url: string) => { videoId: string };
     fetchMetadata: (videoId: string) => Promise<YoutubeMetadata>;
     fetchTranscript: (videoId: string) => Promise<YoutubeTranscript>;
+    fetchChannelById: (channelId: string) => Promise<{
+      channelId: string;
+      channelTitle: string | null;
+      customUrl: string | null;
+      avatarUrl: string | null;
+    }>;
   };
   utteranceBuilder: {
     buildFromTranscript: (rawText: string) => UtteranceInput[];
@@ -88,6 +94,38 @@ const listClipsOutputSchema = z.object({
  * - Router only orchestrates; heavy logic lives in ctx services.
  */
 export const youtubeRouter = createTRPCRouter({
+  resolveChannelFromVideoUrl: publicProcedure
+    .input(
+      z.object({
+        url: z.string().url(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { youtube } = requireServices(ctx);
+      console.log("===1")
+      const { videoId } = youtube.parseUrl(input.url);
+      console.log("===1.5")
+      const metadata = await youtube.fetchMetadata(videoId);
+      console.log("===2")
+
+      if (!metadata.channelId) {
+        throw new Error("YouTube metadata missing channelId.");
+      }
+      console.log("===3")
+
+      const channel = await youtube.fetchChannelById(metadata.channelId);
+      console.log("=== channels", channel);
+
+      return {
+        platform: "youtube",
+        platformChannelId: channel.channelId,
+        channelName: channel.channelTitle ?? metadata.channelTitle ?? null,
+        handleName: channel.customUrl ? `@${channel.customUrl}` : null,
+        avatarUrl: channel.avatarUrl ?? null,
+        streamerName: channel.channelTitle ?? metadata.channelTitle ?? null,
+      };
+    }),
+
   ingestUrl: publicProcedure
     .input(z.object(
       { 

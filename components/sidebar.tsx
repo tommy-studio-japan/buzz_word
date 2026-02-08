@@ -1,18 +1,20 @@
 "use client"
 
-import { Home, Heart, Tv, List, Grid3x3, Music, Info, Settings, TrendingUp } from "lucide-react"
+import { Home, Heart, Tv, List, Grid3x3, Music, Info, Settings, TrendingUp,FileVideo } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { icon: Home, label: "ホーム", href: "/" },
+  { icon: FileVideo, label: "動画分析", href: "video-analyze"},
   { icon: Heart, label: "お気に入り", href: "/favorites" },
   { icon: Tv, label: "チャンネル", href: "/channels" },
   { icon: List, label: "プレイリスト", href: "/playlists" },
   { icon: Grid3x3, label: "マルチビュー", href: "/multiview" },
   { icon: Music, label: "Musicdex", href: "/musicdex" },
   { icon: TrendingUp, label: "バズワード", href: "/insights/buzzwords" },
+  { icon: Settings, label: "登録", href: "/registry" },
   { icon: Info, label: "案内", href: "/about" },
   { icon: Settings, label: "設定", href: "/settings" },
 ]

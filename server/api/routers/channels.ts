@@ -75,4 +75,38 @@ export const channelsRouter = createTRPCRouter({
         }) ?? []
       );
     }),
+
+  create: publicProcedure
+    .input(
+      z.object({
+        platform: z.string().min(1),
+        platformChannelId: z.string().min(1),
+        channelName: z.string().min(1),
+        handleName: z.string().optional().nullable(),
+        avatarUrl: z.string().url().optional().nullable(),
+        streamerId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const row = {
+        platform: input.platform,
+        platform_channel_id: input.platformChannelId,
+        channel_name: input.channelName,
+        handle_name: input.handleName ?? null,
+        avatar_url: input.avatarUrl ?? null,
+        streamer_id: input.streamerId,
+      };
+
+      const { data, error } = await supabaseServer
+        .from("channels")
+        .upsert(row, { onConflict: "platform,platform_channel_id" })
+        .select("id")
+        .single();
+
+      if (error || !data) {
+        throw new Error(error?.message ?? "failed to upsert channel");
+      }
+
+      return { id: data.id as string };
+    }),
 });

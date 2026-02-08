@@ -68,7 +68,7 @@ export function StreamCard({
           <div className="flex items-center gap-2 text-xs">
             {status === "live" && (
               <>
-                <Badge className="bg-accent text-accent-foreground">配信中</Badge>
+                <Badge className="bg-accent text-accent-foreground">2</Badge>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <Eye className="w-3 h-3" />
                   <span>{viewerCount?.toLocaleString()}</span>
